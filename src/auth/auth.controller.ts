@@ -16,6 +16,7 @@ import {
 import { AuthService } from './auth.service';
 
 import { AuthResponseDto, UserDto } from 'src/auth/dto/auth-response.dto';
+import { User } from 'src/entities';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -44,6 +45,26 @@ export class AuthController {
   })
   async signIn(@Body() loginDto: LoginDto) {
     return this.authService.signIn(loginDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'User logout',
+    description: 'Deactivate user session and invalidate token',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Logout successful',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Invalid or missing JWT token',
+  })
+  async signOut(@Request() req: Express.Request & { user: User }) {
+    console.log('🚀 ~ AuthController ~ signOut ~ req.user:', req.user);
+    return this.authService.signOut(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

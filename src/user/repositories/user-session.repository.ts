@@ -29,6 +29,11 @@ export class UserSessionRepository {
   }
 
   async deactivateUserSession(userId: string): Promise<void> {
-    await this.userSessionRepository.update(userId, { isActive: false });
+    await this.userSessionRepository.update(
+      {
+        userId,
+      },
+      { isActive: false },
+    );
   }
 }
