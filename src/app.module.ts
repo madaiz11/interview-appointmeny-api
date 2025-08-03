@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
 import { createDatabaseConfig } from './config/database.config';
 import { EnvService } from './config/env.service';
 import { SeederModule } from './database/seeders/seeder.module';
@@ -22,6 +24,8 @@ import { HealthModule } from './health/health.module';
     }),
     HealthModule,
     SeederModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvService],

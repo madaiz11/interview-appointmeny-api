@@ -10,7 +10,7 @@ export class HealthService {
     private envService: EnvService,
   ) {}
 
-  async checkHealth() {
+  checkHealth() {
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -37,7 +37,7 @@ export class HealthService {
         database: {
           type: 'postgresql',
           connected: false,
-          error: error.message,
+          error: error instanceof Error ? error.message : 'Unknown error',
         },
         timestamp: new Date().toISOString(),
       };

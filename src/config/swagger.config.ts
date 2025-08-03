@@ -27,11 +27,6 @@ export function createSwaggerConfig(envService: EnvService) {
         `Database: ${envService.postgresHost}:${envService.postgresPort}/${envService.postgresDatabase}`,
     )
     .setVersion('1.0.0')
-    .setContact(
-      'API Support',
-      'https://github.com/your-org/interview-appointment-api',
-      'support@yourcompany.com',
-    )
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addServer(`http://localhost:${envService.appPort}`, 'Development Server')
     .addBearerAuth(
@@ -57,7 +52,7 @@ export const swaggerCustomOptions = {
     filter: true,
     showRequestDuration: true,
     tryItOutEnabled: true,
-    requestInterceptor: (req: any) => {
+    requestInterceptor: (req: any): any => {
       // Add custom headers or modify requests if needed
       return req;
     },

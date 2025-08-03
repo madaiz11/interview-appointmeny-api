@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 
@@ -18,47 +19,56 @@ export class UserSeeder {
       return;
     }
 
+    // Hash password for all users (using 'password123' as default)
+    const hashedPassword = await bcrypt.hash('password123', 10);
+
     const users = [
       {
         email: 'admin@example.com',
-        firstName: 'Admin',
-        lastName: 'User',
-        phone: '+1-555-0001',
+        name: 'Admin User',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=Admin+User&background=0D8ABC&color=fff',
+        password: hashedPassword,
         isActive: true,
       },
       {
         email: 'hr@example.com',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
-        phone: '+1-555-0002',
+        name: 'Sarah Johnson',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=Sarah+Johnson&background=28A745&color=fff',
+        password: hashedPassword,
         isActive: true,
       },
       {
         email: 'interviewer1@example.com',
-        firstName: 'John',
-        lastName: 'Smith',
-        phone: '+1-555-0003',
+        name: 'John Smith',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=John+Smith&background=FFC107&color=000',
+        password: hashedPassword,
         isActive: true,
       },
       {
         email: 'interviewer2@example.com',
-        firstName: 'Emily',
-        lastName: 'Davis',
-        phone: '+1-555-0004',
+        name: 'Emily Davis',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=Emily+Davis&background=DC3545&color=fff',
+        password: hashedPassword,
         isActive: true,
       },
       {
         email: 'candidate1@example.com',
-        firstName: 'Michael',
-        lastName: 'Brown',
-        phone: '+1-555-0005',
+        name: 'Michael Brown',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=Michael+Brown&background=6F42C1&color=fff',
+        password: hashedPassword,
         isActive: true,
       },
       {
         email: 'candidate2@example.com',
-        firstName: 'Jessica',
-        lastName: 'Wilson',
-        phone: '+1-555-0006',
+        name: 'Jessica Wilson',
+        avatarUrl:
+          'https://ui-avatars.com/api/?name=Jessica+Wilson&background=E83E8C&color=fff',
+        password: hashedPassword,
         isActive: true,
       },
     ];
@@ -66,9 +76,7 @@ export class UserSeeder {
     for (const userData of users) {
       const user = this.userRepository.create(userData);
       await this.userRepository.save(user);
-      console.log(
-        `👤 Created user: ${user.firstName} ${user.lastName} (${user.email})`,
-      );
+      console.log(`👤 Created user: ${user.name} (${user.email})`);
     }
 
     console.log(`✅ Successfully seeded ${users.length} users`);

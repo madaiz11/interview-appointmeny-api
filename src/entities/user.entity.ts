@@ -2,12 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  Index,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserAccount } from './user-account.entity';
+import { UserSession } from './user-session.entity';
 
+@Index('active_user_index', ['email', 'isActive'])
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -17,13 +20,13 @@ export class User {
   email: string;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  name: string;
 
   @Column({ nullable: true })
-  phone: string;
+  avatarUrl: string;
+
+  @Column({ select: false })
+  password: string;
 
   @Column({ default: true })
   isActive: boolean;
@@ -34,9 +37,15 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => UserAccount, (userAccount) => userAccount.user, {
+  @OneToOne(() => UserAccount, (userAccount) => userAccount.user, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  userAccounts: UserAccount[];
+  userAccount: UserAccount;
+
+  @OneToOne(() => UserSession, (userSession) => userSession.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  userSession: UserSession;
 }

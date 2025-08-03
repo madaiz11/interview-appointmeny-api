@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserAccount } from '../../entities/user-account.entity';
-import { UserSession } from '../../entities/user-sesion.entity';
+import { UserSession } from '../../entities/user-session.entity';
 import { User } from '../../entities/user.entity';
 import { UserAccountSeeder } from './user-account.seeder';
 import { UserSeeder } from './user.seeder';

@@ -1,3 +1,4 @@
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -7,7 +8,7 @@ import {
   swaggerCustomOptions,
 } from './config/swagger.config';
 
-function setupSwagger(app: any, envService: EnvService) {
+function setupSwagger(app: INestApplication, envService: EnvService) {
   if (!envService.isDevelopment) {
     console.log('📚 Swagger documentation disabled in production mode');
     return;
@@ -39,6 +40,15 @@ async function bootstrap() {
 
   const envService = app.get(EnvService);
 
+  // Enable validation pipes globally
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   // Enable CORS for development
   if (envService.isDevelopment) {
     app.enableCors({
@@ -64,4 +74,7 @@ async function bootstrap() {
     console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
   }
 }
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});

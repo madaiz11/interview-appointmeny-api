@@ -28,4 +28,7 @@ async function runSeeders() {
   }
 }
 
-runSeeders();
+runSeeders().catch((error) => {
+  console.error('Failed to run seeders:', error);
+  process.exit(1);
+});

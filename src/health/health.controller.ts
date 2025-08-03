@@ -67,7 +67,7 @@ export class HealthController {
       },
     },
   })
-  async getHealth() {
+  getHealth() {
     return this.healthService.checkHealth();
   }
 

@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -9,22 +10,18 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity('user_accounts')
-export class UserAccount {
+@Index('active_user_session_index', ['userId', 'isActive'])
+@Entity('user_sessions')
+export class UserSession {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   userId: string;
 
-  @Column()
-  accountType: string; // e.g., 'interviewer', 'candidate', 'admin'
-
-  @Column({ nullable: true })
-  department: string;
-
-  @Column({ nullable: true })
-  position: string;
+  @OneToOne(() => User, (user) => user.userSession)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ default: true })
   isActive: boolean;
@@ -34,11 +31,4 @@ export class UserAccount {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToOne(() => User, (user) => user.userAccount, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  @JoinColumn({ name: 'userId' })
-  user: User;
 }
