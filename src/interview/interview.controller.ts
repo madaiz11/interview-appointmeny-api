@@ -22,8 +22,10 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/entities';
 import { InterviewDI } from 'src/interview/di/interview.di';
 import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
-import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
+import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.request.dto';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
+import { GetInterviewLogListRequestDto } from 'src/interview/dto/get-interview-log-list.request.dto';
+import { GetInterviewLogListResponseDto } from 'src/interview/dto/get-interview-log-list.response';
 import { UpdateInterviewDetailRequestDto } from 'src/interview/dto/update-interview-detail.request.dto';
 import { InterviewService } from 'src/interview/interview.service';
 
@@ -48,6 +50,20 @@ export class InterviewController {
     @Query() request: GetInterviewListRequestDto,
   ): Promise<GetInterviewListResponseDto> {
     return this.interviewService.getInterviewList(request);
+  }
+
+  @Get(':id/logs')
+  @ApiOperation({ summary: 'Get interview log list' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Interview log list',
+    type: GetInterviewLogListResponseDto,
+  })
+  async getInterviewLogList(
+    @Param('id') id: string,
+    @Query() request: GetInterviewLogListRequestDto,
+  ): Promise<GetInterviewLogListResponseDto> {
+    return this.interviewService.getInterviewLogList(id, request);
   }
 
   @Get(':id')

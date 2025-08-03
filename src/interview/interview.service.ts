@@ -3,11 +3,14 @@ import { User } from 'src/entities';
 import { InterviewLogsDI } from 'src/interview/di/interview-logs.di';
 import { InterviewDI } from 'src/interview/di/interview.di';
 import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
-import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
+import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.request.dto';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
+import { GetInterviewLogListRequestDto } from 'src/interview/dto/get-interview-log-list.request.dto';
+import { GetInterviewLogListResponseDto } from 'src/interview/dto/get-interview-log-list.response';
 import { UpdateInterviewDetailRequestDto } from 'src/interview/dto/update-interview-detail.request.dto';
 import { InterviewUtil } from 'src/interview/interview.util';
 import { InterviewValidator } from 'src/interview/interview.validator';
+import { InterviewLogsMapper } from 'src/interview/mapper/interview-logs.mapper';
 import { InterviewMapper } from 'src/interview/mapper/interview.mapper';
 import { InterviewLogsRepository } from 'src/interview/reporitories/interview-logs.repository';
 import { InterviewRepository } from 'src/interview/reporitories/interview.repository';
@@ -90,5 +93,20 @@ export class InterviewService {
     InterviewValidator.validateInterviewNotArchived(result!);
 
     await this.interviewRepository.archiveInterview(id);
+  }
+
+  async getInterviewLogList(
+    interviewId: string,
+    request: GetInterviewLogListRequestDto,
+  ): Promise<GetInterviewLogListResponseDto> {
+    const { items, total } =
+      await this.interviewLogsRepository.getInterviewLogs(interviewId, request);
+
+    return InterviewLogsMapper.toGetInterviewLogListResponseDto(
+      items,
+      total,
+      request.page,
+      request.limit,
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Interview } from 'src/entities/interview.entity';
-import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
+import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.request.dto';
 import { ArchiveStatus } from 'src/shared/enum/archive-status.enum';
 import { EntityManager, Repository, UpdateResult } from 'typeorm';
 
