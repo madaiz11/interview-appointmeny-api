@@ -63,7 +63,6 @@ export class AuthController {
     description: 'Unauthorized - Invalid or missing JWT token',
   })
   async signOut(@Request() req: Express.Request & { user: User }) {
-    console.log('🚀 ~ AuthController ~ signOut ~ req.user:', req.user);
     return this.authService.signOut(req.user.id);
   }
 

@@ -2,13 +2,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Interview } from 'src/entities/interview.entity';
 import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
 import { ArchiveStatus } from 'src/shared/enum/archive-status.enum';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository, UpdateResult } from 'typeorm';
 
 export class InterviewRepository {
+  repo: Repository<Interview>;
+
   constructor(
     @InjectRepository(Interview)
     private readonly interviewRepository: Repository<Interview>,
-  ) {}
+  ) {
+    this.repo = interviewRepository;
+  }
 
   async getInterviewList({ page, limit }: GetInterviewListRequestDto) {
     const [interviews, total] = await this.interviewRepository.findAndCount({
@@ -65,5 +69,15 @@ export class InterviewRepository {
         },
       },
     });
+  }
+
+  async updateInterviewDetail(
+    id: string,
+    interview: Partial<Interview>,
+    manager?: EntityManager,
+  ): Promise<UpdateResult> {
+    const repo = manager?.getRepository(Interview) ?? this.repo;
+
+    return await repo.update({ id }, interview);
   }
 }

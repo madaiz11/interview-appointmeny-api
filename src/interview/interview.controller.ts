@@ -1,23 +1,29 @@
 import {
+  Body,
   Controller,
   Get,
   HttpStatus,
   Inject,
   Param,
+  Patch,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { User } from 'src/entities';
 import { InterviewDI } from 'src/interview/di/interview.di';
 import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
 import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
+import { UpdateInterviewDetailRequestDto } from 'src/interview/dto/update-interview-detail.request.dto';
 import { InterviewService } from 'src/interview/interview.service';
 
 @UseGuards(JwtAuthGuard)
@@ -54,5 +60,21 @@ export class InterviewController {
     @Param('id') id: string,
   ): Promise<GetInterviewDetailResponseDto> {
     return this.interviewService.getInterviewDetail(id);
+  }
+
+  @Patch(':id/detail')
+  @ApiOperation({ summary: 'Update interview detail' })
+  @ApiBody({ type: UpdateInterviewDetailRequestDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Interview detail',
+    type: GetInterviewDetailResponseDto,
+  })
+  async updateInterviewDetail(
+    @Param('id') id: string,
+    @Body() request: UpdateInterviewDetailRequestDto,
+    @Request() req: Express.Request & { user: User },
+  ): Promise<void> {
+    return this.interviewService.updateInterviewDetail(id, request, req.user);
   }
 }
