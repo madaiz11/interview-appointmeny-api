@@ -1,5 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { Interview } from 'src/entities/interview.entity';
+import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
 import { GetInterviewListItemResponseDto } from 'src/interview/dto/get-interview-list-item.response';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
 
@@ -24,5 +25,13 @@ export class InterviewMapper {
       nextPage: isLastPage ? undefined : page + 1,
       limit,
     };
+  }
+
+  static toGetInterviewDetailResponseDto(
+    interview: Interview,
+  ): GetInterviewDetailResponseDto {
+    return plainToInstance(GetInterviewDetailResponseDto, interview, {
+      excludeExtraneousValues: true,
+    });
   }
 }

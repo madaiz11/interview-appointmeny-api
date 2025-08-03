@@ -3,6 +3,7 @@ import {
   Get,
   HttpStatus,
   Inject,
+  Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { InterviewDI } from 'src/interview/di/interview.di';
+import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
 import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.requet.dto';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
 import { InterviewService } from 'src/interview/interview.service';
@@ -39,5 +41,18 @@ export class InterviewController {
     @Query() request: GetInterviewListRequestDto,
   ): Promise<GetInterviewListResponseDto> {
     return this.interviewService.getInterviewList(request);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get interview detail' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Interview detail',
+    type: GetInterviewDetailResponseDto,
+  })
+  async getInterviewDetail(
+    @Param('id') id: string,
+  ): Promise<GetInterviewDetailResponseDto> {
+    return this.interviewService.getInterviewDetail(id);
   }
 }

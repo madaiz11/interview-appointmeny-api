@@ -1,0 +1,4 @@
+export enum InterviewErrorCode {
+  INTERVIEW_NOT_FOUND = 'EINV001',
+  INTERVIEW_ALREADY_ARCHIVED = 'EINV002',
+}
