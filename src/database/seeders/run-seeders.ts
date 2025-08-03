@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { UserAccountSeeder } from 'src/database/seeders/user-account.seeder';
 import { UserSeeder } from 'src/database/seeders/user.seeder';
+import { InterviewSeeder } from 'src/database/seeders/interview.seeder';
 import { AppModule } from '../../app.module';
 
 async function runSeeders() {
@@ -12,12 +13,16 @@ async function runSeeders() {
     // Run seeders in order
     const userSeeder = app.get(UserSeeder);
     const userAccountSeeder = app.get(UserAccountSeeder);
+    const interviewSeeder = app.get(InterviewSeeder);
 
     console.log('👤 Seeding users...');
     await userSeeder.seed();
 
     console.log('🏢 Seeding user accounts...');
     await userAccountSeeder.seed();
+
+    console.log('📋 Seeding interviews...');
+    await interviewSeeder.seed();
 
     console.log('✅ Database seeding completed successfully!');
   } catch (error) {
