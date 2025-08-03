@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Inject,
   Param,
@@ -63,10 +64,11 @@ export class InterviewController {
   }
 
   @Patch(':id/detail')
+  @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Update interview detail' })
   @ApiBody({ type: UpdateInterviewDetailRequestDto })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.ACCEPTED,
     description: 'Interview detail',
     type: GetInterviewDetailResponseDto,
   })
@@ -76,5 +78,16 @@ export class InterviewController {
     @Request() req: Express.Request & { user: User },
   ): Promise<void> {
     return this.interviewService.updateInterviewDetail(id, request, req.user);
+  }
+
+  @Patch(':id/archive')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({ summary: 'Archive interview' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Interview archived',
+  })
+  async archiveInterview(@Param('id') id: string): Promise<void> {
+    return this.interviewService.archiveInterview(id);
   }
 }

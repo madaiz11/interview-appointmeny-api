@@ -80,4 +80,8 @@ export class InterviewRepository {
 
     return await repo.update({ id }, interview);
   }
+
+  async archiveInterview(id: string): Promise<void> {
+    await this.repo.update({ id }, { isArchived: ArchiveStatus.ARCHIVED });
+  }
 }

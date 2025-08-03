@@ -81,4 +81,14 @@ export class InterviewService {
       }
     });
   }
+
+  async archiveInterview(id: string): Promise<void> {
+    const result = await this.interviewRepository.getInterviewDetail(id);
+
+    InterviewValidator.validateInterviewExists(result);
+
+    InterviewValidator.validateInterviewNotArchived(result!);
+
+    await this.interviewRepository.archiveInterview(id);
+  }
 }
