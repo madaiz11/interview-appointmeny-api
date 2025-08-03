@@ -23,12 +23,12 @@ export class UserSession {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Column({ default: true })
+  @Column({ default: true, type: 'boolean' })
   isActive: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }

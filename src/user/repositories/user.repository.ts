@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ACTIVE_STATUS } from 'src/shared/enum/active-status.enum';
+import { ActiveStatus } from 'src/shared/enum/active-status.enum';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 
@@ -33,7 +33,7 @@ export class UserRepository {
 
     qb.where('user.email = :email', { email }).andWhere(
       'user.isActive = :active',
-      { active: ACTIVE_STATUS.ACTIVE },
+      { active: ActiveStatus.ACTIVE },
     );
     return qb.getOne();
   }
@@ -55,7 +55,7 @@ export class UserRepository {
       ]);
 
     qb.where('user.id = :id', { id }).andWhere('user.isActive = :active', {
-      active: ACTIVE_STATUS.ACTIVE,
+      active: ActiveStatus.ACTIVE,
     });
     return qb.getOne();
   }

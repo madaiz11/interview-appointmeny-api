@@ -17,22 +17,25 @@ export class UserAccount {
   @Column()
   userId: string;
 
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
   accountType: string; // e.g., 'interviewer', 'candidate', 'admin'
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   department: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   position: string;
 
-  @Column({ default: true })
+  @Column({ default: true, type: 'boolean' })
   isActive: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @OneToOne(() => User, (user) => user.userAccount, {

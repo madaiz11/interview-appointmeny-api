@@ -3,6 +3,8 @@ export { UserAccount } from './user-account.entity';
 export { UserSession } from './user-session.entity';
 export { User } from './user.entity';
 
-// Add more entities as needed:
-// export { Appointment } from './appointment.entity';
-// export { Interview } from './interview.entity';
+// Interview related entities
+export { Interview } from './interview.entity';
+export { InterviewComments } from './interview-comments.entity';
+export { InterviewLogs } from './interview-logs.entity';
+export { MasterInterviewStatus } from './master-interview-status.entity';
