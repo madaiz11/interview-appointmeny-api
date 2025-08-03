@@ -1,6 +1,3 @@
-import { InterviewComments } from 'src/entities/interview-comments.entity';
-import { InterviewLogs } from 'src/entities/interview-logs.entity';
-import { Interview } from 'src/entities/interview.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { InterviewComments } from './interview-comments.entity';
+import { InterviewLogs } from './interview-logs.entity';
+import { Interview } from './interview.entity';
 import { UserAccount } from './user-account.entity';
 import { UserSession } from './user-session.entity';
 

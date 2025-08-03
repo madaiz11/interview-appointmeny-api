@@ -1,5 +1,3 @@
-import { Interview } from 'src/entities/interview.entity';
-import { User } from 'src/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Interview } from './interview.entity';
+import { User } from './user.entity';
 
 @Entity('interview_comments')
 export class InterviewComments {

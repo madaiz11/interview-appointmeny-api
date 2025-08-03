@@ -1,9 +1,3 @@
-import { InterviewComments } from 'src/entities/interview-comments.entity';
-import { InterviewLogs } from 'src/entities/interview-logs.entity';
-import { MasterInterviewStatus } from 'src/entities/master-interview-status.entity';
-import { User } from 'src/entities/user.entity';
-import { ArchiveStatus } from 'src/shared/enum/archive-status.enum';
-import { MasterInterviewStatusCode } from 'src/shared/enum/master/interview-status-code.enum';
 import {
   Column,
   CreateDateColumn,
@@ -13,6 +7,12 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ArchiveStatus } from '../shared/enum/archive-status.enum';
+import { MasterInterviewStatusCode } from '../shared/enum/master/interview-status-code.enum';
+import { InterviewComments } from './interview-comments.entity';
+import { InterviewLogs } from './interview-logs.entity';
+import { MasterInterviewStatus } from './master-interview-status.entity';
+import { User } from './user.entity';
 
 @Entity('interviews')
 export class Interview {

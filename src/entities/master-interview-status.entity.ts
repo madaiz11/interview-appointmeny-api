@@ -1,10 +1,10 @@
-import { MasterInterviewStatusCode } from 'src/shared/enum/master/interview-status-code.enum';
+import { MasterInterviewStatusCode } from '../shared/enum/master/interview-status-code.enum';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('master_interview_status')
 export class MasterInterviewStatus {
   @PrimaryColumn({
-    type: 'varchar2',
+    type: 'varchar',
     length: 5,
   })
   code: MasterInterviewStatusCode;

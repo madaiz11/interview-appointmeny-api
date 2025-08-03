@@ -1,7 +1,7 @@
-import { Interview } from 'src/entities/interview.entity';
-import { MasterInterviewStatus } from 'src/entities/master-interview-status.entity';
-import { User } from 'src/entities/user.entity';
-import { MasterInterviewStatusCode } from 'src/shared/enum/master/interview-status-code.enum';
+import { Interview } from './interview.entity';
+import { MasterInterviewStatus } from './master-interview-status.entity';
+import { User } from './user.entity';
+import { MasterInterviewStatusCode } from '../shared/enum/master/interview-status-code.enum';
 import {
   Column,
   CreateDateColumn,
