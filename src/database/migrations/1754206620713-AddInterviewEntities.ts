@@ -116,9 +116,9 @@ export class AddInterviewEntities1754206620713 implements MigrationInterface {
     // Insert initial data into master_interview_status
     await queryRunner.query(`
       INSERT INTO "master_interview_status" ("code", "title", "createdAt", "updatedAt") VALUES
-      ('IS01', 'TODO', NOW(), NOW()),
-      ('IS02', 'IN_PROGRESS', NOW(), NOW()),
-      ('IS03', 'DONE', NOW(), NOW())
+      ('IS01', 'To Do', NOW(), NOW()),
+      ('IS02', 'In Progress', NOW(), NOW()),
+      ('IS03', 'Done', NOW(), NOW())
     `);
   }
 

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { InterviewModule } from 'src/interview/interview.module';
 import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,6 +27,7 @@ import { HealthModule } from './health/health.module';
     SeederModule,
     AuthModule,
     UserModule,
+    InterviewModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvService],
