@@ -12,6 +12,8 @@ import { InterviewService } from 'src/interview/interview.service';
 import { InterviewLogsRepository } from 'src/interview/reporitories/interview-logs.repository';
 import { InterviewDI } from './di/interview.di';
 import { InterviewRepository } from './reporitories/interview.repository';
+import { InterviewCommentsRepository } from 'src/interview/reporitories/interview-comments.repoitory';
+import { InterviewCommentsDI } from 'src/interview/di/interview-comments.di';
 
 const persistenceProviders = [
   {
@@ -21,6 +23,10 @@ const persistenceProviders = [
   {
     provide: InterviewLogsDI.repository,
     useClass: InterviewLogsRepository,
+  },
+  {
+    provide: InterviewCommentsDI.repository,
+    useClass: InterviewCommentsRepository,
   },
   {
     provide: InterviewDI.service,

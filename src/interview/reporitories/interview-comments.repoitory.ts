@@ -19,7 +19,7 @@ export class InterviewCommentsRepository {
     return this.interviewCommentRepository.save({
       interviewId,
       comment,
-      userId,
+      createdByUserId: userId,
     });
   }
 
@@ -59,7 +59,7 @@ export class InterviewCommentsRepository {
         'createdByUser.id as "createdByUser_id"',
         'createdByUser.name as "createdByUser_name"',
         'createdByUser.avatarUrl as "createdByUser_avatarUrl"',
-        'CASE WHEN createdByUser.id = :currentUserId THEN false ELSE true END as isViewOnly',
+        'CASE WHEN createdByUser.id = :currentUserId THEN false ELSE true END as is_view_only',
       ])
       .orderBy('interviewComment.createdAt', 'DESC')
       .skip((page - 1) * limit)
@@ -75,12 +75,11 @@ export class InterviewCommentsRepository {
     ]);
 
     const transformedItems = items.map((item) => ({
-      ...item,
       id: item.id,
       comment: item.comment,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
-      isViewOnly: item.isViewOnly === 'true',
+      isViewOnly: Boolean(item.is_view_only),
       createdByUser: {
         id: item.createdByUser_id,
         name: item.createdByUser_name,
@@ -89,7 +88,7 @@ export class InterviewCommentsRepository {
     }));
 
     return {
-      items: transformedItems,
+      items: transformedItems as Array<InterviewComments & { isViewOnly: boolean }>,
       total,
     };
   }

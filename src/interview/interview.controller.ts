@@ -101,6 +101,7 @@ export class InterviewController {
   }
 
   @Post(':id/comment')
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create interview comment' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -119,6 +120,7 @@ export class InterviewController {
   }
 
   @Put(':id/comment/:commentId')
+  @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Update interview comment' })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,
@@ -165,6 +167,7 @@ export class InterviewController {
   }
 
   @Delete(':id/comment/:commentId')
+  @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Delete interview comment' })
   @ApiResponse({
     status: HttpStatus.ACCEPTED,

@@ -29,7 +29,8 @@ export class InterviewValidator {
     interview: Interview,
     loggedInUser: User,
   ): void {
-    if (interview.createdByUser.id !== loggedInUser.id) {
+    const createdUserId = interview?.createdByUser?.id ?? interview?.createdByUserId;
+    if (createdUserId !== loggedInUser.id) {
       throw new BadRequestException(
         InterviewErrorCode.INTERVIEW_NOT_ALLOWED_TO_UPDATE,
       );
