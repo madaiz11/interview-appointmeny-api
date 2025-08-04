@@ -1,6 +1,92 @@
 # 🛠 Interview Appointment API - Setup Guide
 
-This comprehensive guide will walk you through setting up the Interview Appointment API from scratch to a fully functional development environment.
+This comprehensive guide covers multiple setup options for the Interview Appointment API. **For the fastest setup, we recommend the Docker approach.**
+
+## 🎯 **Setup Options**
+
+| Option | Best For | Prerequisites | Setup Time |
+|--------|----------|---------------|------------|
+| **[🐳 Docker](#-docker-setup)** | **Production & Development** | Docker | 5 minutes |
+| **[💻 Local Development](#-local-development-setup)** | Local debugging | Node.js + Docker | 10 minutes |
+| **[🔄 Hybrid Approach](#-hybrid-approach)** | Database in Docker, API local | Node.js + Docker | 8 minutes |
+
+---
+
+## 🐳 **Docker Setup**
+
+**Recommended for most users - fastest and most reliable setup.**
+
+### **Prerequisites**
+- **Docker**: v20.0+ ([Install Guide](https://docs.docker.com/get-docker/))
+- **Docker Compose**: v2.0+ (included with Docker Desktop)
+
+### **Quick Start**
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd interview-appointmeny-api
+
+# 2. Copy environment template (create if missing)
+cp .env.example .env
+
+# 3. Start everything with one command
+docker compose up -d
+
+# 4. Verify setup
+curl http://localhost:3000/health
+```
+
+### **Development with Hot Reload**
+```bash
+# Start development environment
+docker compose --profile dev up -d
+
+# View logs
+docker compose logs -f api-dev
+
+# The API will automatically reload when you change files
+```
+
+### **Database Operations**
+```bash
+# Run migrations
+docker compose exec api npm run migration:run
+
+# Run seeders
+docker compose exec api npm run seed:run
+
+# Access database
+docker compose exec postgres psql -U postgres -d interview_appointment
+```
+
+### **Service Management**
+```bash
+# View all services
+docker compose ps
+
+# Stop all services
+docker compose down
+
+# Restart specific service
+docker compose restart api
+
+# View logs
+docker compose logs -f api
+```
+
+### **Access Points**
+- **API**: http://localhost:3000
+- **Health Check**: http://localhost:3000/health
+- **Database**: localhost:5433
+- **PgAdmin**: http://localhost:8080 (add `--profile admin`)
+
+**✅ Docker setup complete!** For detailed Docker information, see [Docker Setup Guide](DOCKER_SETUP.md).
+
+---
+
+## 💻 **Local Development Setup**
+
+**For developers who prefer running Node.js locally with containerized database.**
 
 ## 📋 **Prerequisites**
 
@@ -471,5 +557,55 @@ Once your environment is set up:
 8. **Document your changes** and update this guide as needed
 
 ---
+
+---
+
+## 🔄 **Hybrid Approach**
+
+**Run database in Docker but API locally for debugging flexibility.**
+
+### **Setup**
+```bash
+# 1. Clone and setup project
+git clone <repository-url>
+cd interview-appointmeny-api
+npm install
+
+# 2. Start only database services
+docker compose up -d postgres pgadmin
+
+# 3. Setup environment for local development
+cp .env.example .env
+# Edit .env to ensure POSTGRES_HOST=localhost
+
+# 4. Setup database and start API
+npm run migration:run
+npm run seed:run
+npm run start:dev
+```
+
+### **Benefits**
+- ✅ **Full debugging** capabilities with Node.js
+- ✅ **Consistent database** environment
+- ✅ **IDE integration** for breakpoints
+- ✅ **Fast restarts** for API development
+
+### **Use Cases**
+- Advanced debugging sessions
+- Performance profiling
+- IDE-specific tooling
+- Custom development workflows
+
+---
+
+## 📊 **Setup Comparison**
+
+| Feature | Docker | Local Development | Hybrid |
+|---------|--------|------------------|--------|
+| **Setup Speed** | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ |
+| **Consistency** | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ |
+| **Debugging** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
+| **Production Similarity** | ⭐⭐⭐ | ⭐ | ⭐⭐ |
+| **Resource Usage** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
 
 **Need help?** Check the [Developer Guide](DEVELOPMENT.md) or review the [Troubleshooting](#troubleshooting) section above.

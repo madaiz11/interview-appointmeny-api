@@ -1,10 +1,13 @@
 version: '3.8'
 
 services:
+  # =====================================
+  # DATABASE SERVICE
+  # =====================================
   postgres:
     image: postgres:15-alpine
     container_name: interview-appointment-db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -16,24 +19,119 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-interview_appointment}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # =====================================
+  # API SERVICE
+  # =====================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET:-production}
+    container_name: interview-appointment-api
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-interview_appointment}
+      APP_PORT: ${APP_PORT:-3000}
+      NODE_ENV: ${NODE_ENV:-production}
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-1d}
+    ports:
+      - '${API_PORT:-3000}:3000'
+      - '${API_DEBUG_PORT:-9229}:9229'  # Debug port for development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      # Mount source code for development hot reload
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        npm run migration:run &&
+        echo 'Skipping seeders in production...' &&
+        node dist/src/main.js
+      "
+
+  # =====================================
+  # DEVELOPMENT API SERVICE (Hot Reload)
+  # =====================================
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: interview-appointment-api-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-interview_appointment}
+      APP_PORT: ${APP_PORT:-3000}
+      NODE_ENV: development
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-1d}
+    ports:
+      - '${API_PORT:-3000}:3000'
+      - '${API_DEBUG_PORT:-9229}:9229'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/dist
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        npm run migration:run &&
+        npm run seed:run &&
+        npm run start:dev
+      "
+    profiles:
+      - dev
+
+  # =====================================
+  # DATABASE ADMIN INTERFACE
+  # =====================================
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: interview-appointment-pgadmin
-    restart: always
+    restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
       - '${PGADMIN_PORT:-8080}:80'
     depends_on:
       - postgres
     networks:
       - app-network
+    profiles:
+      - admin
 
 volumes:
   postgres_data:
+    driver: local
 
 networks:
   app-network:
     driver: bridge
+    name: ${NETWORK_NAME:-interview-api-network}

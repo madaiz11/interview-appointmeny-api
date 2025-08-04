@@ -36,77 +36,96 @@ The Interview Appointment API is designed to streamline the interview process by
 
 ## 🚀 **Quick Start**
 
-### **Prerequisites**
+Choose your preferred setup method:
 
-- Node.js (v20.11+)
-- Docker & Docker Compose
-- npm or yarn
+### **🐳 Option 1: Docker (Recommended)**
 
-### **1. Installation**
+**Prerequisites:** Docker & Docker Compose
 
 ```bash
 # Clone and navigate to project
 git clone <repository-url>
 cd interview-appointmeny-api
 
-# Install dependencies
-npm install
-```
-
-### **2. Environment Setup**
-
-```bash
-# Copy environment template
+# Copy environment template (create if missing)
 cp .env.example .env
 
-# Edit .env file with your settings (optional for development)
-# Default values are configured for local development
-```
-
-### **3. Start Services**
-
-```bash
-# Start PostgreSQL and PgAdmin
+# Start everything with Docker
 docker compose up -d
 
-# Run database migrations
-npm run migration:run
-
-# Seed database with sample data
-npm run seed:run
-
-# Start development server
-npm run start:dev
-```
-
-### **4. Verify Installation**
-
-```bash
-# Check application health
+# Verify services
 curl http://localhost:3000/health
-
-# Check database connectivity
-curl http://localhost:3000/health/db
 ```
 
 🎉 **Your API is now running at `http://localhost:3000`**
 
+### **💻 Option 2: Local Development**
+
+**Prerequisites:** Node.js (v20.11+), Docker (for database)
+
+```bash
+# Clone and setup project
+git clone <repository-url>
+cd interview-appointmeny-api
+npm install
+
+# Start database services only
+docker compose up -d postgres pgadmin
+
+# Setup database and start API locally
+npm run migration:run
+npm run seed:run
+npm run start:dev
+```
+
+### **🛠 Option 3: Development with Hot Reload**
+
+**Prerequisites:** Docker & Docker Compose
+
+```bash
+# Clone project
+git clone <repository-url>
+cd interview-appointmeny-api
+
+# Start development environment with hot reload
+docker compose --profile dev up -d
+
+# View logs
+docker compose logs -f api-dev
+```
+
 ## 📊 **Service Information**
 
-| Service        | URL                     | Credentials             |
-| -------------- | ----------------------- | ----------------------- |
-| **API Server** | `http://localhost:3000` | -                       |
-| **PostgreSQL** | `localhost:5433`        | `postgres/postgres`     |
-| **PgAdmin**    | `http://localhost:8080` | `admin@admin.com/admin` |
+| Service | URL | Credentials | Docker Profile |
+|---------|-----|-------------|----------------|
+| **API Server** | `http://localhost:3000` | - | default, dev |
+| **PostgreSQL** | `localhost:5433` | `postgres/postgres` | always |
+| **PgAdmin** | `http://localhost:8080` | `admin@admin.com/admin` | admin |
+
+### **Docker Profiles**
+```bash
+# Production setup
+docker compose up -d                    # postgres + api
+
+# Development with hot reload  
+docker compose --profile dev up -d      # postgres + api-dev
+
+# With database admin interface
+docker compose --profile admin up -d    # postgres + api + pgadmin
+
+# Full development setup
+docker compose --profile dev --profile admin up -d
+```
 
 ## 📖 **Documentation**
 
-| Document                                       | Description                             |
-| ---------------------------------------------- | --------------------------------------- |
-| **[Setup Guide](docs/SETUP.md)**               | Detailed installation and configuration |
-| **[Migration Guide](docs/MIGRATION_GUIDE.md)** | Database migrations and seeders         |
-| **[API Documentation](docs/API.md)**           | REST API endpoints and usage            |
-| **[Developer Guide](docs/DEVELOPMENT.md)**     | Development workflow and guidelines     |
+| Document | Description |
+|----------|-------------|
+| **[🐳 Docker Setup](docs/DOCKER_SETUP.md)** | **Complete Docker deployment guide** |
+| **[🛠 Setup Guide](docs/SETUP.md)** | Local development installation |
+| **[📊 Migration Guide](docs/MIGRATION_GUIDE.md)** | Database migrations and seeders |
+| **[📋 API Documentation](docs/API.md)** | REST API endpoints and usage |
+| **[👨‍💻 Developer Guide](docs/DEVELOPMENT.md)** | Development workflow and guidelines |
 
 ## 🗄️ **Database Schema**
 
@@ -130,6 +149,25 @@ The system comes pre-configured with sample data:
 
 ### **Available Scripts**
 
+#### **🐳 Docker Commands**
+```bash
+# Production deployment
+docker compose up -d                              # Start all services
+docker compose down                               # Stop all services
+docker compose logs -f api                        # View API logs
+
+# Development with hot reload
+docker compose --profile dev up -d                # Start dev environment
+docker compose logs -f api-dev                    # View dev logs
+docker compose exec api-dev npm run test          # Run tests in container
+
+# Database operations
+docker compose exec api npm run migration:run     # Run migrations
+docker compose exec api npm run seed:run          # Run seeders
+docker compose exec postgres psql -U postgres -d interview_appointment
+```
+
+#### **💻 Local Development Scripts**
 ```bash
 # Development
 npm run start:dev          # Start with hot reload
@@ -173,22 +211,45 @@ interview-appointmeny-api/
 
 ### **Environment Variables**
 
+Create a `.env` file from the template:
+
 ```bash
-# Database
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5433
+# Copy template
+cp .env.example .env
+```
+
+**Key Configuration Options:**
+
+```bash
+# Database Configuration
+POSTGRES_HOST=localhost              # Use 'postgres' for Docker
+POSTGRES_PORT=5433                  # External database port
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DB=interview_appointment
 
-# Application
-APP_PORT=3000
-NODE_ENV=development
+# Application Settings  
+APP_PORT=3000                       # API server port
+NODE_ENV=development                # development | production
+JWT_SECRET=your-secret-key
 
-# External Services
+# Docker-specific
+BUILD_TARGET=production             # production | dev
+API_DEBUG_PORT=9229                # Debug port for development
+
+# Admin Tools
 PGADMIN_EMAIL=admin@admin.com
 PGADMIN_PASSWORD=admin
+PGADMIN_PORT=8080
 ```
+
+### **Docker vs Local Configuration**
+
+| Setting | Local Development | Docker |
+|---------|-------------------|---------|
+| `POSTGRES_HOST` | `localhost` | `postgres` |
+| `POSTGRES_PORT` | `5433` | `5432` |
+| Database access | Host port 5433 | Container port 5432 |
 
 ## 🏥 **Health Monitoring**
 
