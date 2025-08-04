@@ -21,6 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/entities';
 import { InterviewDI } from 'src/interview/di/interview.di';
@@ -45,6 +46,8 @@ export class InterviewController {
     private readonly interviewService: InterviewService,
   ) {}
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 60, ttl: 60000 } })
   @Get()
   @ApiOperation({ summary: 'Get interview list' })
   @ApiResponse({
@@ -58,6 +61,8 @@ export class InterviewController {
     return this.interviewService.getInterviewList(request);
   }
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 60, ttl: 60000 } })
   @Get(':id/comments')
   @ApiOperation({ summary: 'Get interview comment list' })
   @ApiResponse({
@@ -73,6 +78,8 @@ export class InterviewController {
     return this.interviewService.getInterviewCommentList(id, request, req.user);
   }
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 60, ttl: 60000 } })
   @Get(':id/logs')
   @ApiOperation({ summary: 'Get interview log list' })
   @ApiResponse({
@@ -87,6 +94,8 @@ export class InterviewController {
     return this.interviewService.getInterviewLogList(id, request);
   }
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 60, ttl: 60000 } })
   @Get(':id')
   @ApiOperation({ summary: 'Get interview detail' })
   @ApiResponse({
@@ -100,6 +109,8 @@ export class InterviewController {
     return this.interviewService.getInterviewDetail(id);
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 20, ttl: 60000 } })
   @Post(':id/comment')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create interview comment' })
@@ -119,6 +130,8 @@ export class InterviewController {
     );
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 20, ttl: 60000 } })
   @Put(':id/comment/:commentId')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Update interview comment' })
@@ -138,6 +151,8 @@ export class InterviewController {
     );
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 20, ttl: 60000 } })
   @Patch(':id/detail')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Update interview detail' })
@@ -155,6 +170,8 @@ export class InterviewController {
     return this.interviewService.updateInterviewDetail(id, request, req.user);
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 20, ttl: 60000 } })
   @Patch(':id/archive')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Archive interview' })
@@ -166,6 +183,8 @@ export class InterviewController {
     return this.interviewService.archiveInterview(id);
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 20, ttl: 60000 } })
   @Delete(':id/comment/:commentId')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Delete interview comment' })

@@ -5,6 +5,7 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { HealthService } from './health.service';
 
 @ApiTags('Health')
@@ -12,6 +13,8 @@ import { HealthService } from './health.service';
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 100, ttl: 60000 } })
   @Get()
   @ApiOperation({
     summary: 'Get application health status',
@@ -71,6 +74,8 @@ export class HealthController {
     return this.healthService.checkHealth();
   }
 
+  @SkipThrottle()
+  @Throttle({ long: { limit: 100, ttl: 60000 } })
   @Get('db')
   @ApiOperation({
     summary: 'Get database health status',

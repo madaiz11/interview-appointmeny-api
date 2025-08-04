@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InterviewModule } from 'src/interview/interview.module';
-import { UserModule } from 'src/user/user.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { UserModule } from 'src/user/user.module';    
 import { AuthModule } from './auth/auth.module';
 import { createDatabaseConfig } from './config/database.config';
 import { EnvService } from './config/env.service';
@@ -29,7 +27,6 @@ import { HealthModule } from './health/health.module';
     UserModule,
     InterviewModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, EnvService],
+  providers: [EnvService],
 })
 export class AppModule {}

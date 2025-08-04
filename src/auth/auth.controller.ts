@@ -13,6 +13,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 
 import { AuthResponseDto, UserDto } from 'src/auth/dto/auth-response.dto';
@@ -25,6 +26,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @SkipThrottle()
+  @Throttle({ short: { limit: 5, ttl: 60000 } }) // 5 requests per minute
   @Post('login')
   @ApiOperation({
     summary: 'User login',
@@ -47,6 +50,8 @@ export class AuthController {
     return this.authService.signIn(loginDto);
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 10, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @ApiBearerAuth('JWT-auth')
@@ -66,6 +71,8 @@ export class AuthController {
     return this.authService.signOut(req.user.id);
   }
 
+  @SkipThrottle()
+  @Throttle({ medium: { limit: 30, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   @ApiBearerAuth('JWT-auth')
