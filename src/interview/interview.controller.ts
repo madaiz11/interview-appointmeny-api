@@ -1,12 +1,15 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Inject,
   Param,
   Patch,
+  Post,
+  Put,
   Query,
   Request,
   UseGuards,
@@ -21,11 +24,14 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/entities';
 import { InterviewDI } from 'src/interview/di/interview.di';
+import { GetInterviewCommentListRequestDto } from 'src/interview/dto/get-interview-comment-list.request';
+import { GetInterviewCommentListResponseDto } from 'src/interview/dto/get-interview-comment-list.response';
 import { GetInterviewDetailResponseDto } from 'src/interview/dto/get-interview-detail.response';
 import { GetInterviewListRequestDto } from 'src/interview/dto/get-interview-list.request.dto';
 import { GetInterviewListResponseDto } from 'src/interview/dto/get-interview-list.response';
 import { GetInterviewLogListRequestDto } from 'src/interview/dto/get-interview-log-list.request.dto';
 import { GetInterviewLogListResponseDto } from 'src/interview/dto/get-interview-log-list.response';
+import { MutationInterviewCommentRequestDto } from 'src/interview/dto/mutation-interview-comment.request.dto';
 import { UpdateInterviewDetailRequestDto } from 'src/interview/dto/update-interview-detail.request.dto';
 import { InterviewService } from 'src/interview/interview.service';
 
@@ -50,6 +56,21 @@ export class InterviewController {
     @Query() request: GetInterviewListRequestDto,
   ): Promise<GetInterviewListResponseDto> {
     return this.interviewService.getInterviewList(request);
+  }
+
+  @Get(':id/comments')
+  @ApiOperation({ summary: 'Get interview comment list' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Interview comment list',
+    type: GetInterviewCommentListResponseDto,
+  })
+  async getInterviewCommentList(
+    @Param('id') id: string,
+    @Query() request: GetInterviewCommentListRequestDto,
+    @Request() req: Express.Request & { user: User },
+  ): Promise<GetInterviewCommentListResponseDto> {
+    return this.interviewService.getInterviewCommentList(id, request, req.user);
   }
 
   @Get(':id/logs')
@@ -79,6 +100,42 @@ export class InterviewController {
     return this.interviewService.getInterviewDetail(id);
   }
 
+  @Post(':id/comment')
+  @ApiOperation({ summary: 'Create interview comment' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Interview comment created',
+  })
+  async createInterviewComment(
+    @Param('id') id: string,
+    @Body() request: MutationInterviewCommentRequestDto,
+    @Request() req: Express.Request & { user: User },
+  ): Promise<void> {
+    return this.interviewService.createInterviewComment(
+      id,
+      request.comment,
+      req.user,
+    );
+  }
+
+  @Put(':id/comment/:commentId')
+  @ApiOperation({ summary: 'Update interview comment' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Interview comment updated',
+  })
+  async updateInterviewComment(
+    @Param('commentId') commentId: string,
+    @Body() request: MutationInterviewCommentRequestDto,
+    @Request() req: Express.Request & { user: User },
+  ): Promise<void> {
+    return this.interviewService.updateInterviewComment(
+      commentId,
+      request.comment,
+      req.user,
+    );
+  }
+
   @Patch(':id/detail')
   @HttpCode(HttpStatus.ACCEPTED)
   @ApiOperation({ summary: 'Update interview detail' })
@@ -105,5 +162,18 @@ export class InterviewController {
   })
   async archiveInterview(@Param('id') id: string): Promise<void> {
     return this.interviewService.archiveInterview(id);
+  }
+
+  @Delete(':id/comment/:commentId')
+  @ApiOperation({ summary: 'Delete interview comment' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Interview comment deleted',
+  })
+  async deleteInterviewComment(
+    @Param('commentId') commentId: string,
+    @Request() req: Express.Request & { user: User },
+  ): Promise<void> {
+    return this.interviewService.deleteInterviewComment(commentId, req.user);
   }
 }

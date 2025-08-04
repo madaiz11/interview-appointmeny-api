@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Interview, InterviewLogs, MasterInterviewStatus } from 'src/entities';
+import {
+  Interview,
+  InterviewComments,
+  InterviewLogs,
+  MasterInterviewStatus,
+} from 'src/entities';
 import { InterviewLogsDI } from 'src/interview/di/interview-logs.di';
 import { InterviewController } from 'src/interview/interview.controller';
 import { InterviewService } from 'src/interview/interview.service';
@@ -25,7 +30,12 @@ const persistenceProviders = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Interview, InterviewLogs, MasterInterviewStatus]),
+    TypeOrmModule.forFeature([
+      Interview,
+      InterviewLogs,
+      MasterInterviewStatus,
+      InterviewComments,
+    ]),
   ],
   controllers: [InterviewController],
   providers: [...persistenceProviders],
