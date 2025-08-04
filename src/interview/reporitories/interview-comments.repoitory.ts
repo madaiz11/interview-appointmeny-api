@@ -4,6 +4,17 @@ import { InterviewComments } from 'src/entities';
 import { GetInterviewCommentListRequestDto } from 'src/interview/dto/get-interview-comment-list.request';
 import { Repository } from 'typeorm';
 
+interface RawInterviewCommentResult {
+  id: string;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  is_view_only: boolean;
+  createdByUser_id: string;
+  createdByUser_name: string;
+  createdByUser_avatarUrl: string;
+}
+
 @Injectable()
 export class InterviewCommentsRepository {
   repo: Repository<InterviewComments>;
@@ -69,26 +80,30 @@ export class InterviewCommentsRepository {
       .createQueryBuilder('interviewComment')
       .where('interviewComment.interviewId = :interviewId', { interviewId });
 
-    const [items, total] = await Promise.all([
-      dataQb.getRawMany(),
+    const [rawItems, total] = await Promise.all([
+      dataQb.getRawMany<RawInterviewCommentResult>(),
       countQb.getCount(),
     ]);
 
-    const transformedItems = items.map((item) => ({
-      id: item.id,
-      comment: item.comment,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-      isViewOnly: Boolean(item.is_view_only),
-      createdByUser: {
-        id: item.createdByUser_id,
-        name: item.createdByUser_name,
-        avatarUrl: item.createdByUser_avatarUrl,
-      },
-    }));
+    const transformedItems = rawItems.map(
+      (item: RawInterviewCommentResult) => ({
+        id: item.id || '',
+        comment: item.comment || '',
+        createdAt: item.createdAt || new Date(),
+        updatedAt: item.updatedAt || new Date(),
+        isViewOnly: Boolean(item.is_view_only),
+        createdByUser: {
+          id: item.createdByUser_id || '',
+          name: item.createdByUser_name || '',
+          avatarUrl: item.createdByUser_avatarUrl || '',
+        },
+      }),
+    );
 
     return {
-      items: transformedItems as Array<InterviewComments & { isViewOnly: boolean }>,
+      items: transformedItems as Array<
+        InterviewComments & { isViewOnly: boolean }
+      >,
       total,
     };
   }

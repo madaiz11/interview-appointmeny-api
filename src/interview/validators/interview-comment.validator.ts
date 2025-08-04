@@ -17,7 +17,8 @@ export class InterviewCommentValidator {
     interviewComment: InterviewComments,
     currentUser: User,
   ): void {
-    const createdUserId = interviewComment?.createdByUser?.id ?? interviewComment?.createdByUserId;
+    const createdUserId =
+      interviewComment?.createdByUser?.id ?? interviewComment?.createdByUserId;
     if (createdUserId !== currentUser.id) {
       throw new BadRequestException(
         InterviewErrorCode.INTERVIEW_COMMENT_NOT_ALLOWED_TO_UPDATE,

@@ -115,10 +115,16 @@ export class InterviewSeeder {
 
     // Generate 133 mock interviews
     for (let i = 1; i <= 133; i++) {
-      const randomPosition = jobPositions[Math.floor(Math.random() * jobPositions.length)];
-      const randomCompany = companies[Math.floor(Math.random() * companies.length)];
-      const randomStatus = statusCodes[Math.floor(Math.random() * statusCodes.length)];
-      const randomDescription = interviewDescriptions[Math.floor(Math.random() * interviewDescriptions.length)];
+      const randomPosition =
+        jobPositions[Math.floor(Math.random() * jobPositions.length)];
+      const randomCompany =
+        companies[Math.floor(Math.random() * companies.length)];
+      const randomStatus =
+        statusCodes[Math.floor(Math.random() * statusCodes.length)];
+      const randomDescription =
+        interviewDescriptions[
+          Math.floor(Math.random() * interviewDescriptions.length)
+        ];
 
       // Create more realistic interview titles
       const titleVariations = [
@@ -130,7 +136,8 @@ export class InterviewSeeder {
         `${randomCompany} ${randomPosition} Assessment`,
       ];
 
-      const randomTitle = titleVariations[Math.floor(Math.random() * titleVariations.length)];
+      const randomTitle =
+        titleVariations[Math.floor(Math.random() * titleVariations.length)];
 
       interviews.push({
         title: `${randomTitle} #${i.toString().padStart(3, '0')}`,
@@ -138,7 +145,9 @@ export class InterviewSeeder {
         isArchived: ArchiveStatus.NOT_ARCHIVED,
         interviewStatusCode: randomStatus,
         createdByUserId: adminUser.id,
-        createdAt: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)), // Random date within last 30 days
+        createdAt: new Date(
+          Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000),
+        ), // Random date within last 30 days
       });
     }
 
@@ -146,7 +155,7 @@ export class InterviewSeeder {
     for (const interviewData of interviews) {
       const interview = this.interviewRepository.create(interviewData);
       await this.interviewRepository.save(interview);
-      
+
       // Log every 20th interview to show progress
       if (parseInt(interview.title.split('#')[1]) % 20 === 0) {
         console.log(`📋 Created interview: ${interview.title}`);
@@ -156,9 +165,15 @@ export class InterviewSeeder {
     console.log(`✅ Successfully seeded ${interviews.length} interviews`);
 
     // Show status distribution
-    const todoCount = interviews.filter(i => i.interviewStatusCode === MasterInterviewStatusCode.TODO).length;
-    const inProgressCount = interviews.filter(i => i.interviewStatusCode === MasterInterviewStatusCode.IN_PROGRESS).length;
-    const doneCount = interviews.filter(i => i.interviewStatusCode === MasterInterviewStatusCode.DONE).length;
+    const todoCount = interviews.filter(
+      (i) => i.interviewStatusCode === MasterInterviewStatusCode.TODO,
+    ).length;
+    const inProgressCount = interviews.filter(
+      (i) => i.interviewStatusCode === MasterInterviewStatusCode.IN_PROGRESS,
+    ).length;
+    const doneCount = interviews.filter(
+      (i) => i.interviewStatusCode === MasterInterviewStatusCode.DONE,
+    ).length;
 
     console.log(`📊 Status distribution:`);
     console.log(`   - TODO: ${todoCount} interviews`);

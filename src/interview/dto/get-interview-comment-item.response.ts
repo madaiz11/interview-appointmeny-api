@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { InterviewComments } from 'src/entities';
 
 export class GetInterviewCommentItemResponseDto {
   @Expose()
@@ -17,10 +18,14 @@ export class GetInterviewCommentItemResponseDto {
   isViewOnly: boolean;
 
   @Expose()
-  @Transform(({ obj }) => obj.createdByUser.name)
+  @Transform(
+    ({ obj }: { obj: InterviewComments }) => obj?.createdByUser?.name || '',
+  )
   creatorName: string;
 
-  @Expose()
-  @Transform(({ obj }) => obj.createdByUser.avatarUrl)
+  @Transform(
+    ({ obj }: { obj: InterviewComments }) =>
+      obj?.createdByUser?.avatarUrl || '',
+  )
   creatorAvatarUrl: string;
 }

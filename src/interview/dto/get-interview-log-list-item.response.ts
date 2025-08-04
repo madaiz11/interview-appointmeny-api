@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { InterviewLogs } from 'src/entities';
 
 export class GetInterviewLogListItemResponseDto {
   @Expose()
@@ -11,7 +12,9 @@ export class GetInterviewLogListItemResponseDto {
   description: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.interviewStatus.title)
+  @Transform(
+    ({ obj }: { obj: InterviewLogs }) => obj?.interviewStatus?.title || '',
+  )
   status: string;
 
   @Expose()

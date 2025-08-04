@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { Interview } from 'src/entities';
 
 export class GetInterviewDetailResponseDto {
   @Expose()
@@ -11,21 +12,23 @@ export class GetInterviewDetailResponseDto {
   description: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.interviewStatus.code)
+  @Transform(({ obj }: { obj: Interview }) => obj?.interviewStatus?.code || '')
   statusCode: string;
 
   @Expose()
   createdAt: Date;
 
   @Expose()
-  @Transform(({ obj }) => obj.createdByUser.name)
+  @Transform(({ obj }: { obj: Interview }) => obj?.createdByUser?.name || '')
   creatorName: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.createdByUser.email)
+  @Transform(({ obj }: { obj: Interview }) => obj?.createdByUser?.email || '')
   creatorEmail: string;
 
   @Expose()
-  @Transform(({ obj }) => obj.createdByUser.avatarUrl)
+  @Transform(
+    ({ obj }: { obj: Interview }) => obj?.createdByUser?.avatarUrl || '',
+  )
   creatorAvatarUrl: string;
 }
